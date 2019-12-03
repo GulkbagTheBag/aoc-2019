@@ -5,24 +5,23 @@ import Text.Megaparsec.Char (newline)
 
 import Util
 
-getFuelReq :: Int -> Int
-getFuelReq mass = (mass `div` 3) - 2
+getFuelReq mass = mass `div` 3 - 2
 
-getFuelReqOnInputList :: [Int] -> Int
-getFuelReqOnInputList inputList = do
-  let listMapped = map getFuelReq inputList
-  sum listMapped
+getFullFuelReq mass =
+  sum $ takeWhile (> 0) $ iterate getFuelReq (getFuelReq mass)
 
-parsedInput :: [Int]
+getFullFuelReqOnInputList inputList = sum $ fmap getFullFuelReq inputList
+
+getFuelReqOnInputList inputList = sum $ fmap getFuelReq inputList
+
 parsedInput = inputParser parseMasses "input.txt"
 
-parseMasses :: Parser [Int]
 parseMasses = manyTill (parseMass <* optional newline) eof
 
-parseMass :: Parser Int
 parseMass = signedInteger
 
 main :: IO ()
 main = do
   putStr "The Final sum is: "
   print $ getFuelReqOnInputList parsedInput
+  print $ getFullFuelReqOnInputList parsedInput
