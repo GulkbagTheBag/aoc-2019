@@ -6,7 +6,9 @@ in
   stdenv.mkDerivation rec {
     name = "rust_shell";
     buildInputs = [
-      go
+      nixpkgs.latest.rustChannels.nightly.rust
+      nixpkgs.rustup
     ];
 
+    LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
   }
